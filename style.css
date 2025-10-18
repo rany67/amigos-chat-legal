@@ -23,7 +23,6 @@ body {
     max-width: 400px;
 }
 
-/* Layout do Chat */
 .chat-layout {
     display: flex;
     width: 95%;
@@ -35,7 +34,6 @@ body {
     overflow: hidden;
 }
 
-/* Sidebar */
 .sidebar {
     width: 300px;
     background: #f8f9fa;
@@ -54,24 +52,11 @@ body {
     border-bottom: 1px solid #e9ecef;
 }
 
-.sidebar-header h3 {
-    color: #333;
-    font-size: 1.1rem;
-}
-
-/* Canais */
 .canais-container h4,
 .amigos-container h4,
 .privado-container h4 {
     margin-bottom: 0.5rem;
     color: #555;
-    font-size: 0.9rem;
-}
-
-.lista-canais,
-.lista-amigos,
-.lista-conversas {
-    margin-bottom: 1rem;
 }
 
 .canal-item {
@@ -81,21 +66,13 @@ body {
     border-radius: 8px;
     border-left: 4px solid #667eea;
     cursor: pointer;
-    transition: all 0.3s;
-}
-
-.canal-item:hover {
-    background: #e9ecef;
-    transform: translateX(5px);
 }
 
 .canal-item.ativo {
     background: #667eea;
     color: white;
-    border-left-color: #5a6fd8;
 }
 
-/* Pesquisa */
 .pesquisa-container {
     position: relative;
 }
@@ -123,74 +100,41 @@ body {
     align-items: center;
 }
 
-.usuario-resultado:hover {
-    background: #f5f5f5;
-}
-
 .btn-acao {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;
+    color: white;
 }
 
 .btn-adicionar {
     background: #28a745;
-    color: white;
-}
-
-.btn-adicionar:hover {
-    background: #218838;
 }
 
 .btn-privado {
     background: #6f42c1;
-    color: white;
     margin-left: 5px;
 }
 
-.btn-privado:hover {
-    background: #5a2d91;
-}
-
-/* Amigos e Conversas */
 .amigo-item,
 .conversa-item {
     padding: 10px;
     margin-bottom: 5px;
     background: white;
     border-radius: 8px;
-    border-left: 4px solid #28a745;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     cursor: pointer;
 }
 
+.amigo-item {
+    border-left: 4px solid #28a745;
+}
+
 .conversa-item {
-    border-left-color: #6f42c1;
+    border-left: 4px solid #6f42c1;
 }
 
-.amigo-item:hover,
-.conversa-item:hover {
-    background: #e9ecef;
-}
-
-.amigo-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.status-online {
-    width: 8px;
-    height: 8px;
-    background: #28a745;
-    border-radius: 50%;
-}
-
-/* Área do Chat */
 .chat-area {
     flex: 1;
     display: flex;
@@ -204,17 +148,6 @@ body {
     border-bottom: 1px solid #e9ecef;
 }
 
-.chat-header h3 {
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-#info-canal {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-/* Mensagens */
 .mensagens-container {
     flex: 1;
     border: 2px solid #f0f0f0;
@@ -230,21 +163,19 @@ body {
     margin-bottom: 10px;
     background: white;
     border-radius: 10px;
-    border-left: 4px solid #667eea;
     position: relative;
 }
 
 .mensagem-global {
-    border-left-color: #667eea;
+    border-left: 4px solid #667eea;
 }
 
 .mensagem-grupo {
-    border-left-color: #28a745;
+    border-left: 4px solid #28a745;
 }
 
 .mensagem-privada {
-    border-left-color: #6f42c1;
-    background: #f8f9ff;
+    border-left: 4px solid #6f42c1;
 }
 
 .minha-mensagem {
@@ -254,23 +185,7 @@ body {
 .mensagem-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 5px;
-}
-
-.mensagem-header strong {
-    color: #333;
-    font-size: 14px;
-}
-
-.mensagem-header small {
-    color: #888;
-    font-size: 12px;
-}
-
-.mensagem-texto {
-    color: #555;
-    margin-right: 30px;
 }
 
 .tipo-mensagem {
@@ -292,7 +207,6 @@ body {
     border-radius: 4px;
     width: 20px;
     height: 20px;
-    font-size: 12px;
     cursor: pointer;
     display: none;
 }
@@ -301,11 +215,6 @@ body {
     display: block;
 }
 
-.btn-apagar:hover {
-    background: #ff5252;
-}
-
-/* Inputs e Botões */
 .input-group {
     display: flex;
     gap: 0.5rem;
@@ -319,23 +228,13 @@ body {
     font-size: 16px;
 }
 
-.input-field:focus {
-    border-color: #667eea;
-    outline: none;
-}
-
 .btn {
     padding: 12px 20px;
     background: #667eea;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
     cursor: pointer;
-}
-
-.btn:hover {
-    background: #5a6fd8;
 }
 
 .btn-sair {
@@ -345,100 +244,27 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
 }
 
-.btn-sair:hover {
-    background: #ff5252;
-}
-
-.mensagem {
-    text-align: center;
-    margin-top: 1rem;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-/* Scrollbar */
-.mensagens-container::-webkit-scrollbar,
-.lista-amigos::-webkit-scrollbar,
-.lista-conversas::-webkit-scrollbar {
-    width: 6px;
-}
-
-.mensagens-container::-webkit-scrollbar-track,
-.lista-amigos::-webkit-scrollbar-track,
-.lista-conversas::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.mensagens-container::-webkit-scrollbar-thumb,
-.lista-amigos::-webkit-scrollbar-thumb,
-.lista-conversas::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 10px;
-
-}
-
-/* ===== RESPONSIVIDADE PARA CELULAR ===== */
+/* Responsividade Mobile */
 @media (max-width: 768px) {
     .chat-layout {
         flex-direction: column;
-        width: 100%;
         height: 100vh;
         border-radius: 0;
+        width: 100%;
     }
     
     .sidebar {
         width: 100%;
         height: 40vh;
-        border-right: none;
-        border-bottom: 1px solid #e9ecef;
     }
     
     .chat-area {
         height: 60vh;
-        padding: 0.5rem;
     }
     
     .container {
         width: 95%;
-        padding: 1rem;
-    }
-    
-    .mensagens-container {
-        height: 200px;
-    }
-    
-    .input-group {
-        flex-direction: column;
-    }
-    
-    .btn {
-        margin-top: 0.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar-header {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .sidebar-header h3 {
-        font-size: 1rem;
-    }
-    
-    .canais-container,
-    .amigos-container,
-    .privado-container {
-        font-size: 0.9rem;
-    }
-    
-    .canal-item,
-    .amigo-item,
-    .conversa-item {
-        padding: 8px;
-        font-size: 0.9rem;
     }
 }
