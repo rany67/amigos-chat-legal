@@ -1,4 +1,4 @@
-// Sistema de Chat com 3 Canais
+// Sistema de Chat com 3 Canais - VERSÃO CORRIGIDA
 let usuarioAtual = '';
 let amigos = [];
 let conversasPrivadas = [];
@@ -99,13 +99,13 @@ function iniciarConversaPrivada(amigoUsername) {
     carregarMensagens();
 }
 
-// Pesquisa de Usuários
+// Pesquisa de Usuários - CORRIGIDA
 function configurarPesquisa() {
     const pesquisaInput = document.getElementById('pesquisa-usuario');
+    const resultados = document.getElementById('resultados-pesquisa');
     
     pesquisaInput.addEventListener('input', async function(e) {
         const termo = e.target.value.trim();
-        const resultados = document.getElementById('resultados-pesquisa');
         
         if (termo.length < 2) {
             resultados.style.display = 'none';
@@ -153,6 +153,7 @@ function configurarPesquisa() {
         }
     });
     
+    // Esconder resultados ao clicar fora
     document.addEventListener('click', function(e) {
         if (!pesquisaInput.contains(e.target) && !resultados.contains(e.target)) {
             resultados.style.display = 'none';
@@ -206,26 +207,21 @@ async function carregarAmigos() {
 // Conversas Privadas
 async function carregarConversasPrivadas() {
     try {
-        // Buscar conversas onde o usuário atual participa
-        const conversasSnapshot = await db.collection('mensagens')
-            .where('tipo', '==', 'privada')
-            .where('participantes', 'array-contains', usuarioAtual)
-            .get();
+        // Buscar TODAS as mensagens privadas e filtrar manualmente (evita índices complexos)
+        const todasMensagens = await db.collection('mensagens').get();
         
         const usuariosConversados = new Set();
         
-        conversasSnapshot.forEach(doc => {
+        todasMensagens.forEach(doc => {
             const msg = doc.data();
-            if (msg.usuario !== usuarioAtual) {
-                usuariosConversados.add(msg.usuario);
-            }
-            // Também verificar outros participantes
-            if (msg.participantes) {
-                msg.participantes.forEach(participante => {
-                    if (participante !== usuarioAtual) {
-                        usuariosConversados.add(participante);
-                    }
-                });
+            if (msg.tipo === 'privada' && msg.participantes) {
+                if (msg.participantes.includes(usuarioAtual)) {
+                    msg.participantes.forEach(participante => {
+                        if (participante !== usuarioAtual) {
+                            usuariosConversados.add(participante);
+                        }
+                    });
+                }
             }
         });
         
@@ -246,12 +242,99 @@ async function carregarConversasPrivadas() {
     }
 }
 
-// Sistema de Mensagens Multi-Canais
+// Sistema de Mensagens - VERSÃO SIMPLIFICADA (sem índices complexos)
+function carregarMensagens() {
+    console.log("Carregando mensagens para canal:", canalAtual);
+    
+    // Carregar TODAS as mensagens e filtrar manualmente (evita problemas de índice)
+    db.collection('mensagens')
+        .orderBy('timestamp', 'asc')
+        .onSnapshot(snapshot => {
+            const container = document.getElementById('mensagens');
+            container.innerHTML = '';
+            
+            let mensagensMostradas = 0;
+            
+            snapshot.forEach(doc => {
+                const msg = doc.data();
+                let deveMostrar = false;
+                
+                // Filtragem manual por canal
+                if (canalAtual === 'global' && msg.tipo === 'global') {
+                    deveMostrar = true;
+                }
+                else if (canalAtual === 'grupo' && msg.tipo === 'grupo') {
+                    // Para grupo, verificar se usuário pode ver
+                    if (!msg.visivelPara || msg.visivelPara.includes(usuarioAtual)) {
+                        deveMostrar = true;
+                    }
+                }
+                else if (canalAtual === 'privado' && msg.tipo === 'privada') {
+                    // Para privado, verificar participantes
+                    if (msg.participantes && 
+                        msg.participantes.includes(usuarioAtual) && 
+                        msg.participantes.includes(conversaPrivadaAtual)) {
+                        deveMostrar = true;
+                    }
+                }
+                
+                if (deveMostrar) {
+                    mensagensMostradas++;
+                    const div = document.createElement('div');
+                    div.className = `mensagem-item mensagem-${msg.tipo} ${msg.usuario === usuarioAtual ? 'minha-mensagem' : ''}`;
+                    
+                    let hora = 'Agora';
+                    if (msg.timestamp) {
+                        hora = msg.timestamp.toDate().toLocaleTimeString('pt-BR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                    
+                    let tipoBadge = '';
+                    switch(msg.tipo) {
+                        case 'global': tipoBadge = '🌐 Global'; break;
+                        case 'grupo': tipoBadge = '👥 Grupo'; break;
+                        case 'privada': tipoBadge = '🔒 Privado'; break;
+                    }
+                    
+                    div.innerHTML = `
+                        <div class="mensagem-header">
+                            <div>
+                                <strong>${msg.usuario}</strong>
+                                <span class="tipo-mensagem">${tipoBadge}</span>
+                            </div>
+                            <small>${hora}</small>
+                        </div>
+                        <div class="mensagem-texto">${msg.texto}</div>
+                        ${msg.usuario === usuarioAtual ? 
+                            `<button class="btn-apagar" onclick="apagarMensagem('${doc.id}')">×</button>` : ''
+                        }
+                    `;
+                    
+                    container.appendChild(div);
+                }
+            });
+            
+            if (mensagensMostradas === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Nenhuma mensagem neste canal</div>';
+            }
+            
+            container.scrollTop = container.scrollHeight;
+        }, error => {
+            console.error("Erro ao carregar mensagens:", error);
+            container.innerHTML = '<div style="text-align: center; color: red; padding: 20px;">Erro ao carregar mensagens</div>';
+        });
+}
+
 function enviarMensagem() {
     const input = document.getElementById('mensagem-input');
     const texto = input.value.trim();
 
-    if (!texto || !usuarioAtual) return;
+    if (!texto || !usuarioAtual) {
+        alert("Digite uma mensagem!");
+        return;
+    }
 
     let mensagemData = {
         usuario: usuarioAtual,
@@ -260,19 +343,16 @@ function enviarMensagem() {
         tipo: canalAtual
     };
 
+    console.log("Enviando mensagem para canal:", canalAtual);
+
     // Configurar baseado no canal
     switch(canalAtual) {
         case 'global':
-            // Todos podem ver - sem restrições
             break;
-            
         case 'grupo':
-            // Apenas amigos podem ver
             mensagemData.visivelPara = [usuarioAtual, ...amigos];
             break;
-            
         case 'privado':
-            // Conversa entre duas pessoas
             mensagemData.tipo = 'privada';
             mensagemData.participantes = [usuarioAtual, conversaPrivadaAtual];
             mensagemData.visivelPara = [usuarioAtual, conversaPrivadaAtual];
@@ -281,94 +361,16 @@ function enviarMensagem() {
 
     db.collection('mensagens').add(mensagemData)
         .then(() => {
+            console.log("Mensagem enviada com sucesso!");
             input.value = '';
-            if (canalAtual === 'privada') {
+            if (canalAtual === 'privado') {
                 carregarConversasPrivadas();
             }
         })
         .catch(error => {
-            console.error("Erro ao enviar:", error);
+            console.error("Erro ao enviar mensagem:", error);
+            alert("Erro ao enviar mensagem: " + error.message);
         });
-}
-
-function carregarMensagens() {
-    let mensagensQuery;
-    
-    switch(canalAtual) {
-        case 'global':
-            mensagensQuery = db.collection('mensagens')
-                .where('tipo', '==', 'global')
-                .orderBy('timestamp', 'asc');
-            break;
-            
-        case 'grupo':
-            mensagensQuery = db.collection('mensagens')
-                .where('tipo', '==', 'grupo')
-                .where('visivelPara', 'array-contains', usuarioAtual)
-                .orderBy('timestamp', 'asc');
-            break;
-            
-        case 'privado':
-            mensagensQuery = db.collection('mensagens')
-                .where('tipo', '==', 'privada')
-                .where('participantes', 'array-contains', usuarioAtual)
-                .orderBy('timestamp', 'asc');
-            break;
-    }
-
-    mensagensQuery.onSnapshot(snapshot => {
-        const container = document.getElementById('mensagens');
-        container.innerHTML = '';
-        
-        snapshot.forEach(doc => {
-            const msg = doc.data();
-            
-            // Para conversas privadas, filtrar apenas as entre os dois usuários
-            if (canalAtual === 'privado' && conversaPrivadaAtual) {
-                if (!msg.participantes || 
-                    !msg.participantes.includes(conversaPrivadaAtual) ||
-                    !msg.participantes.includes(usuarioAtual)) {
-                    return; // Pular mensagem se não for entre esses dois usuários
-                }
-            }
-            
-            const div = document.createElement('div');
-            div.className = `mensagem-item mensagem-${msg.tipo} ${msg.usuario === usuarioAtual ? 'minha-mensagem' : ''}`;
-            
-            let hora = 'Agora';
-            if (msg.timestamp) {
-                hora = msg.timestamp.toDate().toLocaleTimeString('pt-BR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
-            
-            let tipoBadge = '';
-            switch(msg.tipo) {
-                case 'global': tipoBadge = '🌐 Global'; break;
-                case 'grupo': tipoBadge = '👥 Grupo'; break;
-                case 'privada': tipoBadge = '🔒 Privado'; break;
-            }
-            
-            div.innerHTML = `
-                <div class="mensagem-header">
-                    <div>
-                        <strong>${msg.usuario}</strong>
-                        <span class="tipo-mensagem">${tipoBadge}</span>
-                    </div>
-                    <small>${hora}</small>
-                </div>
-                <div class="mensagem-texto">${msg.texto}</div>
-                ${msg.usuario === usuarioAtual ? 
-                    `<button class="btn-apagar" onclick="apagarMensagem('${doc.id}')">×</button>` : ''
-                }
-            `;
-            
-            container.appendChild(div);
-        });
-        
-        container.scrollTop = container.scrollHeight;
-    });
 }
 
 // Apagar Mensagem
