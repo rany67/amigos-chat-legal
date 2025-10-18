@@ -377,4 +377,68 @@ body {
 .lista-conversas::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 10px;
+
+}
+
+/* ===== RESPONSIVIDADE PARA CELULAR ===== */
+@media (max-width: 768px) {
+    .chat-layout {
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .chat-area {
+        height: 60vh;
+        padding: 0.5rem;
+    }
+    
+    .container {
+        width: 95%;
+        padding: 1rem;
+    }
+    
+    .mensagens-container {
+        height: 200px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .sidebar-header h3 {
+        font-size: 1rem;
+    }
+    
+    .canais-container,
+    .amigos-container,
+    .privado-container {
+        font-size: 0.9rem;
+    }
+    
+    .canal-item,
+    .amigo-item,
+    .conversa-item {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
 }
