@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Multi-Canais</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-container" class="container">
+        <h2>💬 Chat Multi-Canais</h2>
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Nome de usuário" class="input-field">
+        </div>
+        <div class="form-group">
+            <input type="password" id="password" placeholder="Senha" class="input-field">
+        </div>
+        <button onclick="fazerLogin()" class="btn">Entrar / Cadastrar</button>
+        <p id="mensagem" class="mensagem"></p>
+    </div>
+
+    <!-- Tela Principal -->
+    <div id="chat-container" class="chat-layout" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>👋 <span id="usuario-logado"></span></h3>
+                <button onclick="sair()" class="btn-sair">Sair</button>
+            </div>
+            
+            <!-- Canais -->
+            <div class="canais-container">
+                <h4>📡 Canais</h4>
+                <div class="lista-canais">
+                    <div class="canal-item ativo" onclick="mudarCanal('global')">
+                        🌐 Global
+                    </div>
+                    <div class="canal-item" onclick="mudarCanal('grupo')">
+                        👥 Grupo
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pesquisa -->
+            <div class="pesquisa-container">
+                <input type="text" id="pesquisa-usuario" placeholder="🔍 Pesquisar usuários..." class="input-field">
+                <div id="resultados-pesquisa" class="resultados-pesquisa"></div>
+            </div>
+
+            <!-- Amigos -->
+            <div class="amigos-container">
+                <h4>👥 Amigos</h4>
+                <div id="lista-amigos" class="lista-amigos"></div>
+            </div>
+
+            <!-- Conversas Privadas -->
+            <div class="privado-container">
+                <h4>🔒 Conversas Privadas</h4>
+                <div id="lista-conversas" class="lista-conversas"></div>
+            </div>
+        </div>
+
+        <!-- Área do Chat -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <h3 id="titulo-canal">💬 Chat Global</h3>
+                <span id="info-canal">Todos os usuários</span>
+            </div>
+            
+            <div id="mensagens" class="mensagens-container"></div>
+            
+            <div class="input-group">
+                <input type="text" id="mensagem-input" placeholder="Digite sua mensagem..." class="input-field">
+                <button onclick="enviarMensagem()" class="btn">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>
